@@ -1,0 +1,38 @@
+<h3 class="text-2xl font-bold mb-4">Add new user</h3>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <input id="username" class="form-control mx-auto" type="text" formControlName="username" placeholder="Username" required minlength="3" maxlength="32">
+    @if(username?.invalid && (username?.dirty || username?.touched)) {
+        @if(username?.hasError('required')) {
+            <p class="text-red-500 text-center">Username is required.</p>
+        }
+
+        @if(username?.hasError('minlength')) {
+            <p class="text-red-500 text-center">Username must be at least 3 characters long.</p>
+        }
+
+        @if(username?.hasError('maxlength')) {
+            <p class="text-red-500 text-center">Username must be at most 32 characters long.</p>
+        }
+
+        @if(username?.hasError('pattern')) {
+            <p class="text-red-500 text-center">Username must only contain letters and numbers.</p>
+        }
+    }
+
+    <input id="email" class="form-control mx-auto mt-4" type="email" formControlName="email" placeholder="E-mail" required>
+    @if(email?.invalid && (email?.dirty || email?.touched)) {
+        @if(email?.hasError('required')) {
+            <p class="text-red-500 text-center">Email is required.</p>
+        }
+
+        @if(email?.hasError('pattern')) {
+            <p class="text-red-500 text-center">Invalid email format, must include an '&#64;'.</p>
+        }
+    }
+
+    <div class="flex justify-center items-center gap-2">
+      <button matButton="filled" [disabled]="pending() || form.invalid" color="primary" type="submit" class="mt-4 block mx-auto">Add user</button>
+    </div>
+</form>

@@ -1,0 +1,71 @@
+:root {
+    --primary-color: #6518ff;
+    --primary-hover-color: #5a16e1;
+    --secondary-color: #3ABEFF;
+    --tertiary-color: #E3D7FF;
+    --accent-color: #ffbb00;
+    --warn-color: #CF4D6F;
+    --neutral-color: #08090A;
+    --light-neutral-color: #ddd;
+    --light-neutral-hover-color: #e0e0e0;
+    --input-width: min(100%, 320px);
+    --site-font: 'Open Sans', sans-serif;
+}
+
+body.dark {
+    --background-color: #111;
+    --light-neutral-color: #08090A;
+    --light-neutral-hover-color: #1f2225;
+    --neutral-color: #ddd;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--site-font);
+    background-color: var(--background-color);
+    color: var(--font-color);
+
+    --background-color: #fff;
+    --font-color: var(--neutral-color);
+}
+
+.lock-scroll {
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+}
+
+.line-error {
+    background: var(--warn-color);
+    color: var(--font-color);
+    padding: 8px 12px;
+    border-radius: 20px;
+}
+
+.form-fieldset {
+    outline: none;
+    border: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    width: var(--input-width);
+    margin: auto;
+}
+
+.form-control {
+    display: block;
+    width: var(--input-width);
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--light-neutral-color);
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    background-color: var(--mat-form-field-filled-container-color, var(--mat-sys-surface-variant));
+    color: var(--mat-form-field-filled-hover-label-text-color, var(--mat-sys-on-surface-variant));
+}

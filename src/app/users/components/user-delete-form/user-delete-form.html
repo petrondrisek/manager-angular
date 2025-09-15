@@ -1,0 +1,8 @@
+<p>Do you really want to delete user {{user.username}}?</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <input type="hidden" formControlName="id">
+
+    <div class="flex justify-center items-center gap-2">
+      <button matButton="filled" [disabled]="pending() || form.invalid" color="primary" type="submit" class="mt-4">Delete user</button>
+    </div>
+</form>

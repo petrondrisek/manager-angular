@@ -1,0 +1,8 @@
+@use '@angular/material' as mat;
+
+:root {
+  @include mat.slide-toggle-overrides((
+    unselected-icon-color: #ddd,
+    selected-handle-color: green,
+  ));
+}

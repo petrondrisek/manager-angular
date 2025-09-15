@@ -1,0 +1,14 @@
+<header class="site-header">
+  <a class="flex-1" [routerLink]="['/dashboard']" routerLinkActive="active"><h1 class="site-header__title">{{title}}</h1></a>
+  <app-nav class="flex-6 text-right"></app-nav>
+  <app-theme></app-theme>
+</header>
+
+<main>
+  <app-notify></app-notify>
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="site-footer">
+  <p>&copy; 2025 Manager</p>
+</footer>

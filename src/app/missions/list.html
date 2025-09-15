@@ -1,0 +1,92 @@
+<section class="missions">
+    <div class="missions__action-panel flex flex-wrap items-center justify-between">
+        <mat-button-toggle-group (change)="setCompleted($event)" value="notcompleted" color="primary">
+            <mat-button-toggle value="notcompleted">Not completed</mat-button-toggle>
+            <mat-button-toggle value="completed">Completed</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <app-modal #modalAddRef type="extended-fab" buttonText="Add new task" buttonIcon="add">
+            <app-mission-add-form 
+                (toggleModal)="modalAddRef.toggleModal($event)" 
+                [missions]="missions()">
+            </app-mission-add-form>
+        </app-modal>
+    </div>
+
+    @if(filterTag() !== null){
+        <p>Filtered by tag: <strong>{{filterTag()}}</strong></p>
+    }
+
+    <table class="w-full border-2 border-gray-200 dark:border-gray-800 mt-2">
+        <thead>
+            <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+                <th class="text-left py-2 px-4">Title</th>
+                <th class="text-left py-2 px-4">Deadline</th>
+                <th class="text-left py-2 px-4">Tags</th>
+                <th class="text-left py-2 px-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(mission of missions(); let i = $index; track mission.id) {
+                <tr>
+                    <td class="text-left py-2 px-4">
+                        <a 
+                            routerLink="/mission/detail/{{mission.id}}"
+                            class="transition duration-150 ease-in-out font-bold text-gray-500 dark:text-gray-400 hover:text-violet-800"
+                        >{{mission.title}}</a>
+                        @if(lastVisits()[i] < mission.updatedAt)
+                        {
+                            <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">Updated</span>
+                        }
+                        
+                        @if(mission.lastChatMessageAt !== null && lastVisits()[i] < mission.lastChatMessageAt)
+                        {
+                            <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">Chat</span>
+                        }
+                    </td>
+                    <td class="text-left py-2 px-4">
+                        @if(mission.deadline === null) {
+                            <span class="italic">No deadline</span>
+                        }
+                        @if(mission.deadline !== null) {
+                            {{mission.deadline | date:'short'}}
+                        }
+                    </td>
+                    <td class="text-left py-2 px-4">
+                        @for(tag of mission.tags; let i = $index; track i) {
+                            <span 
+                                [ngClass]="{'bg-violet-500 dark:bg-violet-500 text-white': filterTag() === tag}"
+                                class="font-bold bg-gray-200 dark:bg-gray-800 hover:bg-violet-500 hover:text-white transition duration-150 ease-in-out px-2 py-1 mr-1 cursor-pointer" 
+                                (click)="filterByTag(tag)"
+                            >
+                                {{tag}}
+                            </span>
+                        }
+                    </td>
+                    <td>
+                        <app-modal #modalEditRef type="icon" buttonIcon="edit">
+                            <app-mission-edit-form 
+                                (toggleModal)="modalEditRef.toggleModal($event)" 
+                                (updateMission)="updateMission($event)"
+                                [mission]="mission"
+                            >
+                            </app-mission-edit-form>
+                        </app-modal>
+                        <button matIconButton (click)="toggleComplete(mission)" matTooltip="Mark as {{completed() ? 'not completed' : 'completed'}}" color="primary" class="button-icon">
+                            <mat-icon>{{completed() ? 'replay' : 'check'}}</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <mat-paginator #paginator
+                class="demo-paginator"
+                (page)="handlePageEvent($event)"
+                [length]="total()"
+                [pageSize]="limit()"
+                [pageIndex]="page() - 1"
+                [pageSizeOptions]="limitOptions"
+                aria-label="Select page">
+    </mat-paginator>
+</section>

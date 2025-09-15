@@ -1,0 +1,34 @@
+<section class="login grid text-center grid-cols-1 md:grid-cols-3 items-center">
+    <div class="flex justify-center md:justify-end">
+        <img src="/images/auth/app-login.avif" width="60%" alt="login">
+    </div>
+
+    <div class="col-span-1 md:col-span-2 text-center">
+        <h2 class="text-3xl font-bold mb-2">Sign in</h2>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+            <input id="username" class="form-control mx-auto mt-4" type="text" placeholder="Username" formControlName="username" required minlength="3" />
+            @if(username?.invalid && (username?.dirty || username?.touched)) {
+                @if(username?.hasError('required')) {
+                    <p class="text-red-500">Username is required.</p>
+                }
+
+                @if(username?.hasError('minlength')) {
+                    <p class="text-red-500">Username must be at least 3 characters long.</p>
+                }
+            }
+
+            <input id="password" class="form-control mx-auto mt-4" placeholder="••••••••" type="password" formControlName="password" />
+
+            <button matButton="filled" type="submit" [disabled]="pending() || loginForm.invalid" color="primary" class="mt-4">{{ pending() ? 'Pending...' : 'Sign in' }}</button>
+        </form>
+
+        @if(loginResponse()?.errors) {
+            <div class="text-red-500 p-2 mt-4 rounded w-1/2 mx-auto" *ngIf="loginResponse()?.errors">
+                @for(error of loginResponse()?.errors; let i = $index; track i;) {
+                    <p [innerHTML]="error"></p>
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,33 @@
+<div class="download-button-container">
+    <button 
+    mat-raised-button 
+    [color]="buttonColor"
+    [disabled]="state() === 'loading' || state() === 'downloading'"
+    (click)="downloadFile()"
+    [matTooltip]="tooltipText()"
+    class="download-button mb-2">
+    
+    <mat-icon>{{ buttonIcon() }}</mat-icon>
+    <span class="button-text">{{ buttonText() }}</span>
+    &nbsp;
+    
+    @if (showFileSize && fileInfo()) {
+        <small class="file-size">({{ fileInfo()?.sizeFormatted }})</small>
+    }
+    </button>
+    
+    @if (state() === 'downloading' && showProgress) {
+    <mat-progress-bar 
+        [value]="progress()" 
+        mode="determinate"
+        class="progress-bar">
+    </mat-progress-bar>
+    }
+    
+    @if (state() === 'loading') {
+    <mat-progress-bar 
+        mode="indeterminate"
+        class="progress-bar">
+    </mat-progress-bar>
+    }
+</div>

@@ -1,0 +1,40 @@
+<div [style]="{ 'display': hamburgerMenuSignal() ? 'block' : 'none' }" class="flex justify-end mr-4">
+    <button mat-icon-button (click)="toggleHamburgerMenu()" class="site-nav-hamburger">
+        <mat-icon>{{ isMenuOpen() ? 'close' : 'menu' }}</mat-icon>
+    </button>
+</div>
+
+<nav class="site-nav" [class]="{ 
+    'site-nav--active': isMenuOpen() && hamburgerMenuSignal()
+}">
+    <ul>
+      @if (authService.loggedUser()) {
+          @for (navItem of logged; track navItem.name) {
+              <li class="site-nav__item">
+                <a class="site-nav__item__link" 
+                   [routerLink]="navItem.link" 
+                   routerLinkActive="active"
+                   (click)="closeMenu()">
+                    {{ navItem.name }}
+                    
+                    @if (navItem.name === 'Sign out') {
+                        <small class="opacity-70">({{ authService.loggedUser()?.username }})</small>
+                    }
+                </a>
+              </li>
+          }
+      }
+      @else {
+          @for (navItem of unlogged; track navItem.name) {
+              <li class="site-nav__item">
+                <a class="site-nav__item__link" 
+                   [routerLink]="navItem.link" 
+                   routerLinkActive="active"
+                   (click)="closeMenu()">
+                    {{ navItem.name }}
+                </a>
+            </li>
+          }
+      }
+    </ul>
+</nav>

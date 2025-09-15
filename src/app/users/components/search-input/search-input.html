@@ -1,0 +1,34 @@
+<fieldset class="form-fieldset relative">
+    <label [for]="name">{{label}}</label>
+    <input 
+        [id]="name"
+        #input
+        type="text" 
+        [placeholder]="placeholder"
+        [formControl]="searchControl"
+        class="form-control"
+    />
+
+    @if(users().length > 0) {
+        <ul class="absolute z-50 top-25 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 max-h-52 overflow-y-scroll">
+            @for(user of users(); track user.id) {
+                <li
+                    class="flex items-center justify-between px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" 
+                    (click)="add(user)"
+                >{{user.username}} - {{user.email}}</li>
+            }
+        </ul>
+    }
+
+    @if(selected().length > 0) {
+        <label class="block mt-2 text-sm font-medium text-gray-900 dark:text-white">Selected users:</label>
+        <ul>
+            @for(user of selected(); track user.id) {
+                <li
+                    class="flex items-center justify-between bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded-md"
+                    (click)="add(user)"
+                >{{user.username}} - {{user.email}} - <button mat-icon-button (click)="remove($event, user.id)"><mat-icon>close</mat-icon></button></li>
+            }
+        </ul>
+    }
+</fieldset>

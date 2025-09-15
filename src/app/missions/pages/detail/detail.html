@@ -1,0 +1,103 @@
+<h1 class="text-3xl font-bold mb-4 text-center">
+    {{detail()?.mission?.title}}
+</h1>
+
+<div class="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-screen">
+  @if (detail() !== null) {
+    <table class="lg:col-span-2 w-full border-2 border-gray-200 dark:border-gray-800 mt-2 h-max">
+        <tbody>
+          <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+            <th class="text-left py-2 px-4">Tags</th>
+            <td class="text-left py-2 px-4">
+              @if(detail()!.mission.tags.length === 0) {
+                <span class="italic">No tags</span>
+              }
+              {{detail()!.mission.tags.join(", ")}}
+            </td>
+          </tr>
+
+          <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+            <th class="text-left py-2 px-4">Description</th>
+            <td class="text-left py-2 px-4">
+              @if(detail()!.mission.description === "") {
+                <span class="italic">No description</span>
+              }
+              {{detail()!.mission.description}}
+            </td>
+          </tr>
+
+          <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+            <th class="text-left py-2 px-4">Created by</th>
+            <td class="text-left py-2 px-4">
+              <span class="font-bold">{{detail()!.mission.createdBy.username}}</span> &bull; {{detail()!.mission.createdAt.toLocaleString() | date: 'medium'}}
+            </td>
+          </tr>
+
+          <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+            <th class="text-left py-2 px-4">User to finish mission</th>
+            <td class="text-left py-2 px-4">
+              @if(detail()!.mission.user === null) {
+                <span class="italic">Not assigned</span>
+              }
+              @if(detail()!.mission.user !== null) {
+                <span class="font-bold">{{detail()!.mission.user.username}}</span>
+              }
+            </td>
+          </tr>
+
+          <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+            <th class="text-left py-2 px-4">Deadline</th>
+            <td class="text-left py-2 px-4">
+
+              @if(detail()!.mission.deadline === null) {
+                <span class="italic">No deadline</span>
+              }
+              @if(detail()!.mission.deadline !== null) {
+                {{detail()!.mission.deadline | date:'short'}}
+              }
+            </td>
+          </tr>
+
+          <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+            <th class="text-left py-2 px-4">Files</th>
+            <td class="text-left py-2 px-4">
+              @if(detail()!.mission.files.length === 0) {
+                <span class="italic">No files</span>
+              }
+              <ul>
+              @for(file of detail()!.mission.files; let i = $index; track i) {
+                <li>
+                  <app-file-download-button [fileName]="file.replace('/', '')"></app-file-download-button>
+                </li>
+              }
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="text-left py-2 px-4">Related users</th>
+            <td class="text-left py-2 px-4">
+              @if(detail()!.mission.relatedUsers.length === 0) {
+                <span class="italic">No related users</span>
+              }
+              @for(user of detail()!.mission.relatedUsers; let i = $index; track user.id) {
+                <span class="font-bold">{{user.username}}</span>
+                {{i < detail()!.mission.relatedUsers.length - 1 ? ", " : ""}} 
+              }
+            </td>
+          </tr>
+          <tr>
+            <th class="text-left py-2 px-4">Last updated</th>
+            <td class="text-left py-2 px-4">{{detail()!.mission.updatedAt.toLocaleString() | date: 'medium'}}</td>
+          </tr>
+        </tbody>
+    </table>
+
+    <app-chat 
+      [missionId]="detail()!.mission.id" 
+      [chatMessages]="detail()!.chat.reverse()"
+      [offset]="chatMessageLimit"
+    >
+    </app-chat>
+  }
+</div>

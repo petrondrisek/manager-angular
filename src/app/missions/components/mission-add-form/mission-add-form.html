@@ -1,0 +1,68 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+    <div class="flex justify-center items-center">
+        <mat-form-field [style.fontSize]="12" class="w-[var(--input-width)]">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" />
+        </mat-form-field>
+    </div>
+    @if(title?.invalid && (title?.dirty || title?.touched)) {
+        @if(title?.hasError('required')) {
+            <p class="text-red-500 text-center">Title is required.</p>
+        }
+
+        @if(title?.hasError('minlength')) {
+            <p class="text-red-500 text-center">Title must be at least 5 characters long.</p>
+        }
+
+        @if(title?.hasError('maxlength')) {
+            <p class="text-red-500 text-center">Title must be at most 100 characters long.</p>
+        }
+    }
+
+    <div class="flex justify-center items-center">
+        <mat-form-field [style.fontSize]="12" class="w-[var(--input-width)]">
+            <mat-label>Description</mat-label>
+            <textarea matInput
+                        formControlName="description"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="5"
+            ></textarea>
+        </mat-form-field>
+    </div>
+    @if(description?.invalid && (description?.dirty || description?.touched)) {
+        @if(description?.hasError('maxlength')) {
+            <p class="text-red-500 text-center">Description must be at most 2000 characters long.</p>
+        }
+    }
+
+    <app-search-input name="user" label="Solver" [multiple]="false" (selectedUsers)="setUser($event)"></app-search-input>
+    
+    <div class="flex justify-center items-center mt-8">
+        <mat-form-field [style.fontSize]="12" class="w-[var(--input-width)]">
+            <mat-label>Deadline</mat-label>
+            <input matInput type="datetime-local" formControlName="deadline" />
+        </mat-form-field>
+    </div>
+    @if(deadline?.invalid && (deadline?.dirty || deadline?.touched)) {
+        @if(deadline?.hasError('deadlineInvalid')) {
+            <p class="text-red-500 text-center">Deadline must be after today.</p>
+        }
+    }
+
+    <app-search-input name="relatedUsers" label="Related users" [multiple]="true" (selectedUsers)="setRelatedUsers($event)"></app-search-input>
+
+    <app-file-manager 
+        [storedFiles]="[]"
+        (newFilesChange)="setNewFiles($event)"
+    ></app-file-manager>
+
+    <app-tag-manager 
+        [tags]="currentTags()"
+        (tagsChange)="setTags($event)"
+    ></app-tag-manager>
+
+    <div class="flex justify-center items-center gap-2">
+      <button matButton="filled" [disabled]="pending() || form.invalid" color="primary" type="submit" class="mt-4">Create task</button>
+    </div>
+</form>

@@ -1,0 +1,56 @@
+<fieldset class="flex flex-col flex-wrap justify-center items-center mt-8">
+  <label class="block text-sm font-medium text-gray-900 dark:text-white">Tags</label>
+
+  <mat-form-field class="w-[var(--input-width)]">
+    <mat-select [formControl]="predefinedTagControl" (selectionChange)="addPredefinedTag()">
+      <mat-option value="">Select a tag...</mat-option>
+      @for(tag of availablePredefinedTags(); track tag) {
+        <mat-option [value]="tag">{{ tag }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="flex flex-wrap gap-2 justify-center items-center w-[var(--input-width)]">
+    <mat-form-field appearance="outline" class="flex-1">
+      <input
+        matInput
+        type="text"
+        placeholder="Enter custom tag"
+        [formControl]="customTagControl"
+        (keydown.enter)="addCustomTag($event)"
+      />
+    </mat-form-field>
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="addCustomTag()"
+      [disabled]="!customTagControl.value?.trim()"
+    >
+      Add
+    </button>
+  </div>
+
+  @if(currentTags().length > 0) {
+    <div>
+      <mat-label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+        Selected tags
+      </mat-label>
+      <mat-chip-set>
+        @for(tag of currentTags(); track tag) {
+          <mat-chip
+            [removable]="true"
+            (removed)="removeTag(tag)"
+            color="primary"
+            selected
+          >
+            {{ tag }}
+            <button matChipRemove>
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-chip>
+        }
+      </mat-chip-set>
+    </div>
+  }
+</fieldset>

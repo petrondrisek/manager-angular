@@ -1,0 +1,89 @@
+@if (type === 'icon') {
+    <button 
+        matIconButton 
+        (click)="toggleModal(true)" 
+        color="primary" 
+        matTooltip="{{buttonText}}" 
+        class="button-icon"
+        [attr.aria-label]="buttonText || 'Open modal'"
+    >
+        <mat-icon>{{buttonIcon}}</mat-icon>
+    </button>
+}
+@else if (type === 'fab') {
+    <button 
+        matFab 
+        (click)="toggleModal(true)" 
+        color="primary" 
+        matTooltip="{{buttonText}}" 
+        class="button-fab"
+        [attr.aria-label]="buttonText || 'Open modal'"
+    >
+        <mat-icon>{{buttonIcon}}</mat-icon>
+    </button>
+}
+@else if (type === 'extended-fab') {
+    <button 
+        matFab 
+        extended 
+        (click)="toggleModal(true)" 
+        color="primary" 
+        class="button-fab-extended"
+        [attr.aria-label]="buttonText || 'Open modal'"
+    >
+        <mat-icon>{{buttonIcon}}</mat-icon> {{buttonText}}
+    </button>
+}
+@else {
+    <button 
+        matButton="filled" 
+        color="primary" 
+        (click)="toggleModal(true)" 
+        class="button-filled"
+    >
+        {{buttonText}}
+    </button>
+}
+
+@if (isModalOpen) {
+    <div 
+        class="modal" 
+        (click)="onOverlayClick($event)"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-labelledby]="modalTitle ? 'modal-title' : null"
+        aria-describedby="modal-content"
+    >    
+        <div 
+            #modalArea
+            class="modal__area bg-gray-100 dark:bg-neutral-900"
+            (click)="onModalAreaClick($event)"
+            [style.max-width]="maxWidth"
+            [style.max-height]="maxHeight"
+            tabindex="-1"
+        >
+            <button 
+                (click)="closeModal()" 
+                class="modal__area__close-button"
+                aria-label="Close modal"
+                matTooltip="Close (Esc)"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+
+            @if (modalTitle) {
+                <div class="modal__area__header">
+                    <h2 id="modal-title" class="modal__title">{{modalTitle}}</h2>
+                </div>
+            }
+
+            <div 
+                #modalContent
+                class="modal__area__content"
+                id="modal-content"
+            >
+                <ng-content></ng-content>
+            </div>
+        </div>
+    </div>
+}

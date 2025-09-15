@@ -1,0 +1,75 @@
+<h3 class="text-2xl font-bold">Editing user {{user.username}}</h3>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <fieldset class="form-fieldset mx-auto">
+        <label for="firstname">First Name</label>
+        <input id="firstname" class="form-control" type="text" formControlName="firstName">
+    </fieldset>
+    @if(firstName?.invalid && (firstName?.dirty || firstName?.touched)) {
+        @if(firstName?.hasError('required')) {
+            <p class="text-red-500 text-center">First name is required.</p>
+        }
+
+        @if(firstName?.hasError('minlength')) {
+            <p class="text-red-500 text-center">First name must be at least 3 characters long.</p>
+        }
+
+        @if(firstName?.hasError('maxlength')) {
+            <p class="text-red-500 text-center">First name must be at most 32 characters long.</p>
+        }
+    }
+
+    <fieldset class="form-fieldset mx-auto">
+        <label for="lastname">Last Name</label>
+        <input id="lastname" class="form-control" type="text" formControlName="lastName">
+    </fieldset>
+    @if(lastName?.invalid && (lastName?.dirty || lastName?.touched)) {
+        @if(lastName?.hasError('required')) {
+            <p class="text-red-500 text-center">Last name is required.</p>
+        }
+
+        @if(lastName?.hasError('minlength')) {
+            <p class="text-red-500 text-center">Last name must be at least 3 characters long.</p>
+        }
+
+        @if(lastName?.hasError('maxlength')) {
+            <p class="text-red-500 text-center">Last name must be at most 32 characters long.</p>
+        }
+    }
+
+    <fieldset class="form-fieldset mx-auto">
+        <label for="email">Email</label>
+        <input id="email" class="form-control" type="email" formControlName="email" required>
+    </fieldset>
+    @if(email?.invalid && (email?.dirty || email?.touched)) {
+        @if(email?.hasError('required')) {
+            <p class="text-red-500 text-center">Email is required.</p>
+        }
+
+        @if(email?.hasError('pattern')) {
+            <p class="text-red-500 text-center">Invalid email format, must include an '&#64;'.</p>
+        }
+    }
+    
+    <fieldset class="form-fieldset mx-auto">
+        <label for="password">Reset password (user will be asked to set a new one after login)</label>
+        <mat-checkbox id="password" formControlName="resetPassword" [aria-label]="'Reset password'"></mat-checkbox>
+    </fieldset>
+
+    <p class="text-2xl font-bold mt-4 border-b-2 border-gray-200 dark:border-gray-800">Permissions</p>
+    @for(permission of permissionsList; track permission.id) {
+        <div class="flex flex-wrap items-center">
+            <mat-checkbox 
+                [id]="'permission' + permission.id" 
+                [checked]="form.value.permissions?.includes(permission.id)"
+                (change)="togglePermission(permission.id, $event)"
+                [disabled]="permission.id === 0"
+            ></mat-checkbox>
+            <label [for]="'permission' + permission.id">{{permission.label}}</label>
+        </div>
+    }
+
+    <div class="flex justify-center items-center gap-2">
+      <button matButton="filled" [disabled]="form.invalid || pending()" color="primary" type="submit" class="mt-4 block mx-auto">Edit user</button>
+    </div>
+</form>

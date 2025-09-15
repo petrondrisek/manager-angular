@@ -1,0 +1,118 @@
+<section class="relative flex flex-col bg-gray-50 dark:bg-neutral-900 h-140">
+    @if(!notMoreMessages()) {
+        <div class="absolute top-2 left-1/2 transform -translate-x-1/2 z-10">
+            <button 
+                mat-button 
+                color="primary" 
+                (click)="loadMoreMessages()"
+                [disabled]="loadingMore()"
+                class="bg-white dark:bg-gray-800 shadow-md rounded-full px-4 py-2 text-sm transition-all duration-200 hover:shadow-lg"
+            >
+                @if(loadingMore()) {
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        Loading...
+                    </div>
+                } @else {
+                    Load older messages
+                }
+            </button>
+        </div>
+    }
+
+    <div 
+        #chatContainer 
+        class="flex-1 overflow-y-auto px-4 py-6 space-y-3 pt-16 scroll-smooth"
+        (scroll)="onScroll($event)"
+        style="scroll-behavior: smooth;"
+    >
+        @if(messages().length === 0) {
+            <div class="flex items-center justify-center h-full">
+                <p class="italic text-gray-500 dark:text-gray-400 text-center">No messages yet. Start the conversation!</p>
+            </div>
+        }
+        
+        @for(message of sortedMessages(); track message.id) {
+            <div 
+                [ngClass]="message.user.id === user()?.id ? 'flex justify-end' : 'flex justify-start'"
+                [attr.data-message-id]="message.id"
+            >
+                <div 
+                    [ngClass]="
+                        (message.user.id === user()?.id 
+                            ? 'bg-violet-500 hover:bg-violet-600 transition-all duration-200 text-white rounded-l-lg rounded-tr-lg max-w-xs lg:max-w-sm' 
+                            : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-r-lg rounded-tl-lg max-w-xs lg:max-w-md shadow-sm hover:shadow-md transition-all duration-200')
+                        + (selectedMessage() !== null &&message.id !== selectedMessage()?.id ? ' opacity-20 transition-opacity duration-200' : ' opacity-100')
+                    "
+                    class="relative group px-4 py-2 break-words cursor-pointer transform transition-transform duration-200 hover:scale-[1.02]"
+                    (click)="setSelectedMessage(message)"
+                >
+                    <div class="text-xs opacity-75 mb-1">
+                        <span class="font-semibold">{{ message.user.username }}</span>
+                        <span class="ml-2">{{ message.createdAt | date: 'short' }}</span>
+                    </div>
+                    
+                    <div class="text-sm leading-relaxed whitespace-pre-wrap">
+                        {{ message.message }}
+                    </div>
+
+                    @if(message.user.id === user()?.id && message.id === selectedMessage()?.id) {
+                        <button 
+                            (click)="deleteMessage(message.id); $event.stopPropagation()"
+                            class="absolute top-1/2 left-[-40px] transform -translate-y-1/2 text-white bg-red-500/80 hover:bg-red-600 rounded-full w-[32px] h-[32px] cursor-pointer transition-all duration-200 hover:scale-110 shadow-lg"
+                            aria-label="Delete message"
+                        >
+                            <mat-icon class="text-lg">delete</mat-icon>
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+        
+        @if(pending()) {
+            <div class="flex justify-end">
+                <div class="bg-blue-500 text-white rounded-l-lg rounded-tr-lg px-4 py-2 max-w-xs opacity-60 animate-pulse">
+                    <div class="flex items-center space-x-2">
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                            <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        </div>
+                        <span class="text-xs">Sending...</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 p-4 backdrop-blur-sm">
+        <form [formGroup]="form" (ngSubmit)="sendMessage()" class="flex gap-3 items-start">
+            <div class="flex-1">
+                <textarea 
+                    #messageInput
+                    class="resize-none min-h-10 w-full py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-neutral-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-neutral-400 transition-all duration-200" 
+                    formControlName="message" 
+                    placeholder="Type your message..."
+                    rows="1"
+                    (keydown)="onKeyDown($event)"
+                    (input)="autoResize($event)"
+                ></textarea>
+            </div>
+            
+            <button 
+                type="submit" 
+                mat-icon-button
+                color="primary"
+                [disabled]="!form.valid || pending()"
+                class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-full p-2 transition-all duration-200 hover:scale-110 shadow-md hover:shadow-lg"
+                aria-label="Send message"
+            >
+                @if(pending()) {
+                    <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                } @else {
+                    <mat-icon>send</mat-icon>
+                }
+            </button>
+        </form>
+    </div>
+</section>

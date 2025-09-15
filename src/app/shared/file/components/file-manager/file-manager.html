@@ -1,0 +1,49 @@
+<div class="mt-8 flex flex-col justify-center items-center">    
+    @if(currentStoredFiles().length > 0) {
+            <label class="block text-sm font-medium text-gray-900 dark:text-white mt-8 mb-4">Current files:</label>
+            <div>
+                @for(file of currentStoredFiles(); track file) {
+                    <div class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-md">
+                        <span class="text-sm">{{getFileName(file)}}</span>
+                        <button 
+                            type="button"
+                            mat-icon-button 
+                            (click)="removeStoredFile(file)"
+                            class="text-red-500 hover:text-red-700"
+                        >
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                }
+            </div>
+    }
+
+    <label for="newFiles" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Add new files:</label>
+    <input 
+        id="newFiles" 
+        class="form-control bg-[#e2e2e2] dark:bg-[#454747]" 
+        type="file"
+        multiple="true" 
+        (change)="onFileChange($event)"
+        accept="image/jpeg, image/png, image/gif, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, video/mp4"
+    >
+
+    @if(newFiles().length > 0) {
+            <label class="mt-4 block text-sm font-medium text-gray-900 dark:text-white mb-2">New files to upload:</label>
+            <div class="space-y-2">
+                @for(file of newFiles(); track file.name) {
+                    <div class="flex items-center justify-between bg-blue-50 dark:bg-blue-900 px-3 py-2 rounded-md">
+                        <span class="text-sm">{{file.name}} ({{formatFileSize(file.size)}})</span>
+                        <button 
+                            type="button"
+                            mat-icon-button 
+                            (click)="removeNewFile(file)"
+                            class="text-red-500 hover:text-red-700"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                }
+            </div>
+    }
+</div>
